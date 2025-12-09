@@ -11,7 +11,33 @@
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
 
     <style>
-      body, html { margin: 0; overflow: hidden; }
+      body, html { margin: 0; overflow: hidden; font-family: sans-serif; }
+	  
+	  #quiz {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px 25px;
+        border-radius: 10px;
+        text-align: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s ease;
+      }
+
+      #quiz.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #quiz button {
+        margin: 5px;
+        padding: 8px 12px;
+        font-size: 16px;
+        cursor: pointer;
+      }
     </style>
   </head>
 
@@ -24,7 +50,6 @@
       <!-- Загружаем спрайт персонажа -->
       <a-assets>
         <img id="characterSprite" src="character.png"> 
-		<img id="characterSprite2" src="character2.png">
       </a-assets>
 
       <!-- Маркер Hiro -->
@@ -37,19 +62,85 @@
                   position="0 1 0"
                   look-at="[camera]">
         </a-entity>
-
       </a-marker>
 
       <a-entity camera></a-entity>
-
     </a-scene>
-
+	 <div id="quiz">
+		  <p id="questionText">Вопрос?</p>
+		  <div id="options"></div>
+		</div>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const marker = document.querySelector("#hiroMarker");
         const character = document.querySelector("#character");
+		const quiz = document.querySelector("#quiz");
         const img = document.querySelector("#characterSprite");
+		
+		
+		const questions = [
+        {
+          text: "Что просила достать Оксана, чтобы она согласилась выйти замуж за Вакулу?",
+          options: ["Валенки, как у Солохи", "Черевички, как у царицы", "Платье, как у царицы"],
+          correct: 1
+        },
+        {
+          text: "К кому обращался Вакула за помощью найти чёрта?",
+          options: ["Сердюк", "Панасюк", "Пацюк"],
+          correct: 1
+        },
+        {
+          text: "Кому из героев повести были сказаны слова: «Тому не нужно далеко ходить, у кого черт за плечами»?",
+          options: ["Вакуле", "Солохе", "Пацюку"],
+          correct: 1
+        }
+      ];
+	  
+	  let currentQuestion = 0;
+      let quizActive = false;
+	  
+	  function showQuestion(index) {
+        if (index >= questions.length) {
+          questionText.textContent = "Вы прошли все вопросы!";
+          optionsDiv.innerHTML = "";
+          return;
+        }
 
+        const q = questions[index];
+        questionText.textContent = q.text;
+        optionsDiv.innerHTML = "";
+
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement("button");
+          btn.textContent = opt;
+          btn.dataset.index = i;
+          btn.addEventListener("click", () => handleAnswer(i));
+          optionsDiv.appendChild(btn);
+        });
+      }
+	  
+	  function handleAnswer(selectedIndex) {
+        if (!quizActive) return;
+        quizActive = false;
+
+        const q = questions[currentQuestion];
+        const buttons = optionsDiv.querySelectorAll("button");
+
+        // Подсветка
+        buttons.forEach((btn, i) => {
+          btn.disabled = true;
+          if (i === q.correct) btn.style.background = "lightgreen";
+          else if (i === selectedIndex) btn.style.background = "red";
+        });
+
+        // Переходим к следующему вопросу через 1.5 сек
+        setTimeout(() => {
+          currentQuestion++;
+          quizActive = true;
+          showQuestion(currentQuestion);
+        }, 1500);
+      }
+	  
         // Подгоняем plane под пропорции картинки
         img.onload = () => {
           const aspect = img.naturalWidth / img.naturalHeight;
@@ -62,13 +153,16 @@
           });
         };
 
-        // Меняем цвет при появлении маркера
         marker.addEventListener("markerFound", () => {
-          console.log("Маркер найден!");
-          character.setAttribute("material", "src", "#characterSprite2");
-        });
+        if (!quizActive) {
+          quiz.classList.add("show");
+          quizActive = true;
+          showQuestion(currentQuestion);
+        }
+      });
 
-        // Возвращаем исходный цвет, когда маркер пропал
+      marker.addEventListener("markerLost", () => {
+        quiz.classList.remove("show");
       });
     </script>
   </body>
