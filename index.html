@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>AR.js 2D Character Interaction</title>
+    <title>AR.js markerFound Color Change</title>
 
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -12,12 +12,6 @@
 
     <style>
       body, html { margin: 0; overflow: hidden; }
-	    .center {
-		 position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		}
     </style>
   </head>
 
@@ -25,25 +19,23 @@
     <a-scene
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
-      renderer="precision: mediump"
-    >
+      renderer="precision: mediump">
 
       <!-- Загружаем спрайт персонажа -->
       <a-assets>
-        <img id="characterSprite" src="character.png">
+        <img id="characterSprite" src="character.png"> 
       </a-assets>
 
-      <!-- Маркер -->
-      <a-marker preset="hiro">
+      <!-- Маркер Hiro -->
+      <a-marker preset="hiro" id="hiroMarker">
 
-        <!-- Персонаж как плоскость -->
+        <!-- Персонаж -->
         <a-entity id="character"
-            geometry="primitive: plane; width: 1; height: 2"
-            material="src: #characterSprite; transparent: true;"
-            position="0 1 0"
-            look-at="[camera]"
-            class="clickable">
-		</a-entity>
+                  geometry="primitive: plane; width: 1; height: 2"
+                  material="src: #characterSprite; transparent: true; color: white;"
+                  position="0 1 0"
+                  look-at="[camera]">
+        </a-entity>
 
       </a-marker>
 
@@ -51,17 +43,15 @@
 
     </a-scene>
 
-    <!-- Скрипт интерактивности -->
-	<script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
-		const marker = document.querySelector("#hiroMarker");
+        const marker = document.querySelector("#hiroMarker");
         const character = document.querySelector("#character");
         const img = document.querySelector("#characterSprite");
 
-        // Подгоняем plane под пропорции изображения
+        // Подгоняем plane под пропорции картинки
         img.onload = () => {
           const aspect = img.naturalWidth / img.naturalHeight;
-          // Высота фиксированная (например, 2 единицы), ширина по пропорции
           const height = 2;
           const width = height * aspect;
           character.setAttribute("geometry", {
@@ -71,10 +61,16 @@
           });
         };
 
-        // Изменяем цвет при тапе
+        // Меняем цвет при появлении маркера
         marker.addEventListener("markerFound", () => {
           console.log("Маркер найден!");
           character.setAttribute("material", "color", "green");
+        });
+
+        // Возвращаем исходный цвет, когда маркер пропал
+        marker.addEventListener("markerLost", () => {
+          console.log("Маркер потерян!");
+          character.setAttribute("material", "color", "white");
         });
       });
     </script>
