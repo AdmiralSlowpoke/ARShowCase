@@ -71,12 +71,9 @@
         };
 
         // Изменяем цвет при тапе
-        character.addEventListener("click", () => {
-          console.log("Персонажа нажали!");
-
-          // Случайный цвет для наглядности
-          const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-          character.setAttribute("material", "color", randomColor);
+        marker.addEventListener("markerFound", () => {
+          console.log("Маркер найден!");
+          character.setAttribute("material", "color", "green");
         });
       });
     </script>
