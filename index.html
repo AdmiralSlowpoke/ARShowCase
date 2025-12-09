@@ -53,7 +53,7 @@
         <img id="characterSprite" src="character.png"> 
       </a-assets>
 
-      <a-marker type="pattern" url="pattern-ForSiteLogo.patt" id="customMarker">
+      <a-marker preset="hiro" id="hiroMarker">
         <a-entity id="character"
                   geometry="primitive: plane; width: 1; height: 2"
                   material="src: #characterSprite; transparent: true; color: white;"
@@ -70,7 +70,7 @@
 		  <div id="options"></div>
 		</div>
     <script>
-        const marker = document.querySelector("#customMarker");
+        const marker = document.querySelector("#hiroMarker");
         const character = document.querySelector("#character");
 		const quiz = document.querySelector("#quiz");
         const img = document.querySelector("#characterSprite");
