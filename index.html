@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>AR.js 2D Character</title>
+    <title>AR.js 2D Character Interaction</title>
 
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -12,43 +12,61 @@
 
     <style>
       body, html { margin: 0; overflow: hidden; }
+	    .center {
+		 position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		}
     </style>
   </head>
 
   <body>
+	<div>
+	<img src="hiro.png" class="center">
+	</div>
     <a-scene
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
       renderer="precision: mediump"
     >
+
+      <!-- Загружаем спрайт персонажа -->
       <a-assets>
         <img id="characterSprite" src="character.png">
       </a-assets>
 
-      <!-- Маркер Hiro встроен через preset -->
+      <!-- Маркер -->
       <a-marker preset="hiro">
+
+        <!-- Персонаж как плоскость -->
         <a-entity id="character"
                   geometry="primitive: plane; height: 1; width: 1"
                   material="src: #characterSprite; transparent: true;"
-                  position="0 0.5 0"
-                  rotation="0 0 0"
+                  position="0 0 0"
+                  rotation="-90 0 0"
                   class="clickable">
         </a-entity>
+
       </a-marker>
 
       <a-entity camera></a-entity>
+
     </a-scene>
 
+    <!-- Скрипт интерактивности -->
     <script>
+      // Ждём, пока сцена загрузится
       document.addEventListener("DOMContentLoaded", () => {
         const character = document.querySelector("#character");
 
         character.addEventListener("click", () => {
           console.log("Персонажа нажали!");
 
+          // Простая анимация: подпрыгивание
           character.setAttribute("animation__jump", {
             property: "position",
-            to: "0 1 0",
+            to: "0 0.3 0",
             dir: "alternate",
             dur: 200,
             loop: 2
