@@ -38,12 +38,13 @@
 
         <!-- Персонаж как плоскость -->
         <a-entity id="character"
-                  geometry="primitive: plane; height: 1; width: 1"
-                  material="src: #characterSprite; transparent: true;"
-                  position="0 0 0"
-                  rotation="-90 0 0"
-                  class="clickable">
-        </a-entity>
+            geometry="primitive: plane; width: 1; height: 2"
+            material="src: #characterSprite; transparent: true;"
+            rotation="-90 0 0"
+            position="0 0.1 0"
+            look-at="[camera]"
+            class="clickable">
+		</a-entity>
 
       </a-marker>
 
