@@ -16,6 +16,7 @@
 	  #quiz {
         position: fixed;
 		width: 75%;
+		max-width: 500px;
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
@@ -52,7 +53,7 @@
         <img id="characterSprite" src="character.png"> 
       </a-assets>
 
-      <a-marker preset="hiro" id="hiroMarker">
+      <a-marker type="pattern" url="pattern.patt" id="customMarker">
         <a-entity id="character"
                   geometry="primitive: plane; width: 1; height: 2"
                   material="src: #characterSprite; transparent: true; color: white;"
