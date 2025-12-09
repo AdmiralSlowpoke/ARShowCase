@@ -38,7 +38,7 @@
 
         <!-- Персонаж как плоскость -->
         <a-entity id="character"
-                  geometry="primitive: plane;"
+                  geometry="primitive: plane; height: 1; width: 1"
                   material="src: #characterSprite; transparent: true;"
                   position="0 0 0"
                   rotation="-90 0 0"
@@ -52,18 +52,31 @@
     </a-scene>
 
     <!-- Скрипт интерактивности -->
-    <script>
-      // Ждём, пока сцена загрузится
+	<script>
       document.addEventListener("DOMContentLoaded", () => {
         const character = document.querySelector("#character");
+        const img = document.querySelector("#characterSprite");
 
+        // Подгоняем plane под пропорции изображения
+        img.onload = () => {
+          const aspect = img.naturalWidth / img.naturalHeight;
+          // Высота фиксированная (например, 2 единицы), ширина по пропорции
+          const height = 2;
+          const width = height * aspect;
+          character.setAttribute("geometry", {
+            primitive: "plane",
+            width: width,
+            height: height
+          });
+        };
+
+        // Добавляем интерактивность: подпрыгивание
         character.addEventListener("click", () => {
           console.log("Персонажа нажали!");
 
-          // Простая анимация: подпрыгивание
           character.setAttribute("animation__jump", {
             property: "position",
-            to: "0 0.3 0",
+            to: `0 0.5 0.5`,  // немного выше позиции
             dir: "alternate",
             dur: 200,
             loop: 2
