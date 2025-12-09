@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>AR.js markerFound Color Change</title>
+    <title>AR.js AR Quiz Multi-Question</title>
 
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -12,8 +12,8 @@
 
     <style>
       body, html { margin: 0; overflow: hidden; font-family: sans-serif; }
-	  
-	  #quiz {
+
+      #quiz {
         position: fixed;
         bottom: 20px;
         left: 50%;
@@ -47,18 +47,14 @@
       arjs="sourceType: webcam; debugUIEnabled: false;"
       renderer="precision: mediump">
 
-      <!-- Загружаем спрайт персонажа -->
       <a-assets>
-        <img id="characterSprite" src="character.png"> 
+        <img id="characterNormal" src="character.png">
       </a-assets>
 
-      <!-- Маркер Hiro -->
       <a-marker preset="hiro" id="hiroMarker">
-
-        <!-- Персонаж -->
         <a-entity id="character"
                   geometry="primitive: plane; width: 1; height: 2"
-                  material="src: #characterSprite; transparent: true; color: white;"
+                  material="src: #characterNormal; transparent: true;"
                   position="0 1 0"
                   look-at="[camera]">
         </a-entity>
@@ -66,40 +62,42 @@
 
       <a-entity camera></a-entity>
     </a-scene>
-	 <div id="quiz">
-		  <p id="questionText">Вопрос?</p>
-		  <div id="options"></div>
-		</div>
+
+    <!-- HTML опрос -->
+    <div id="quiz">
+      <p id="questionText">Вопрос?</p>
+      <div id="options"></div>
+    </div>
+
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const marker = document.querySelector("#hiroMarker");
-        const character = document.querySelector("#character");
-		const quiz = document.querySelector("#quiz");
-        const img = document.querySelector("#characterSprite");
-		
-		
-		const questions = [
+      const marker = document.querySelector("#hiroMarker");
+      const quiz = document.querySelector("#quiz");
+      const questionText = document.getElementById("questionText");
+      const optionsDiv = document.getElementById("options");
+
+      // Список вопросов
+      const questions = [
         {
-          text: "Что просила достать Оксана, чтобы она согласилась выйти замуж за Вакулу?",
-          options: ["Валенки, как у Солохи", "Черевички, как у царицы", "Платье, как у царицы"],
+          text: "Кто это?",
+          options: ["Вариант A", "Вариант B", "Вариант C"],
+          correct: 1 // индекс правильного варианта
+        },
+        {
+          text: "Какого цвета персонаж?",
+          options: ["Красный", "Зелёный", "Синий"],
           correct: 1
         },
         {
-          text: "К кому обращался Вакула за помощью найти чёрта?",
-          options: ["Сердюк", "Панасюк", "Пацюк"],
-          correct: 1
-        },
-        {
-          text: "Кому из героев повести были сказаны слова: «Тому не нужно далеко ходить, у кого черт за плечами»?",
-          options: ["Вакуле", "Солохе", "Пацюку"],
+          text: "Где стоит персонаж?",
+          options: ["На потолке", "На маркере", "В воздухе"],
           correct: 1
         }
       ];
-	  
-	  let currentQuestion = 0;
+
+      let currentQuestion = 0;
       let quizActive = false;
-	  
-	  function showQuestion(index) {
+
+      function showQuestion(index) {
         if (index >= questions.length) {
           questionText.textContent = "Вы прошли все вопросы!";
           optionsDiv.innerHTML = "";
@@ -118,8 +116,8 @@
           optionsDiv.appendChild(btn);
         });
       }
-	  
-	  function handleAnswer(selectedIndex) {
+
+      function handleAnswer(selectedIndex) {
         if (!quizActive) return;
         quizActive = false;
 
@@ -140,20 +138,9 @@
           showQuestion(currentQuestion);
         }, 1500);
       }
-	  
-        // Подгоняем plane под пропорции картинки
-        img.onload = () => {
-          const aspect = img.naturalWidth / img.naturalHeight;
-          const height = 2;
-          const width = height * aspect;
-          character.setAttribute("geometry", {
-            primitive: "plane",
-            width: width,
-            height: height
-          });
-        };
 
-        marker.addEventListener("markerFound", () => {
+      // Показ/скрытие опроса при появлении маркера
+      marker.addEventListener("markerFound", () => {
         if (!quizActive) {
           quiz.classList.add("show");
           quizActive = true;
