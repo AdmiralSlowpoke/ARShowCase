@@ -24,6 +24,7 @@
       <!-- Загружаем спрайт персонажа -->
       <a-assets>
         <img id="characterSprite" src="character.png"> 
+		<img id="characterSprite2" src="character2.png">
       </a-assets>
 
       <!-- Маркер Hiro -->
@@ -64,14 +65,10 @@
         // Меняем цвет при появлении маркера
         marker.addEventListener("markerFound", () => {
           console.log("Маркер найден!");
-          character.setAttribute("material", "color", "green");
+          character.setAttribute("material", "src", "#characterSprite2");
         });
 
         // Возвращаем исходный цвет, когда маркер пропал
-        marker.addEventListener("markerLost", () => {
-          console.log("Маркер потерян!");
-          character.setAttribute("material", "color", "white");
-        });
       });
     </script>
   </body>
