@@ -70,21 +70,13 @@
           });
         };
 
-        // Подпрыгивание при тапе
+        // Изменяем цвет при тапе
         character.addEventListener("click", () => {
           console.log("Персонажа нажали!");
 
-          // Сохраняем исходную позицию
-          const initialPos = character.getAttribute("position");
-
-          // Анимация: вверх → вниз
-          character.setAttribute("animation__jump", {
-            property: "position",
-            to: `${initialPos.x} ${initialPos.y + 2} ${initialPos.z}`,
-            dir: "alternate",
-            dur: 300,
-            loop: 2
-          });
+          // Случайный цвет для наглядности
+          const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+          character.setAttribute("material", "color", randomColor);
         });
       });
     </script>
